@@ -1,57 +1,66 @@
 from fastapi import FastAPI
-from pydantic import BaseModel,conlist
-from typing import List,Optional
+from pydantic import BaseModel, Field
+from typing import List, Optional
 import pandas as pd
-from model import recommend,output_recommended_recipes
+from model import recommend, output_recommended_recipes
 
-
-dataset=pd.read_csv('../Data/dataset.csv',compression='gzip')
+dataset = pd.read_csv('../Data/dataset.csv', compression='gzip')
 
 app = FastAPI()
 
+class NutritionInput(BaseModel):
+    Calories: float = Field(..., ge=0, le=2000, description="Từ 0 đến 2000 kcal")
+    FatContent: float = Field(..., ge=0, le=100, description="Từ 0 đến 100 g")
+    SaturatedFatContent: float = Field(..., ge=0, le=13, description="Từ 0 đến 13 g")
+    CholesterolContent: float = Field(..., ge=0, le=300, description="Từ 0 đến 300 mg")
+    SodiumContent: float = Field(..., ge=0, le=2300, description="Từ 0 đến 2300 mg")
+    CarbohydrateContent: float = Field(..., ge=0, le=325, description="Từ 0 đến 325 g")
+    FiberContent: float = Field(..., ge=0, le=50, description="Từ 0 đến 50 g")
+    SugarContent: float = Field(..., ge=0, le=40, description="Từ 0 đến 40 g")
+    ProteinContent: float = Field(..., ge=0, le=40, description="Từ 0 đến 40 g")
 
 class params(BaseModel):
-    n_neighbors:int=5
-    return_distance:bool=False
+    n_neighbors: int = 5
+    return_distance: bool = False
 
 class PredictionIn(BaseModel):
-    nutrition_input:conlist(float, min_items=9, max_items=9)
-    ingredients:list[str]=[]
-    params:Optional[params]
-
+    nutrition_input: NutritionInput
+    ingredients: List[str] = []
+    params: Optional[params]
 
 class Recipe(BaseModel):
-    Name:str
-    CookTime:str
-    PrepTime:str
-    TotalTime:str
-    RecipeIngredientParts:list[str]
-    Calories:float
-    FatContent:float
-    SaturatedFatContent:float
-    CholesterolContent:float
-    SodiumContent:float
-    CarbohydrateContent:float
-    FiberContent:float
-    SugarContent:float
-    ProteinContent:float
-    RecipeInstructions:list[str]
+    Name: str
+    CookTime: str
+    PrepTime: str
+    TotalTime: str
+    RecipeIngredientParts: List[str]
+    Calories: float
+    FatContent: float
+    SaturatedFatContent: float
+    CholesterolContent: float
+    SodiumContent: float
+    CarbohydrateContent: float
+    FiberContent: float
+    SugarContent: float
+    ProteinContent: float
+    RecipeInstructions: List[str]
 
 class PredictionOut(BaseModel):
     output: Optional[List[Recipe]] = None
-
 
 @app.get("/")
 def home():
     return {"health_check": "OK"}
 
-
-@app.post("/predict/",response_model=PredictionOut)
-def update_item(prediction_input:PredictionIn):
-    recommendation_dataframe=recommend(dataset,prediction_input.nutrition_input,prediction_input.ingredients,prediction_input.params.dict())
-    output=output_recommended_recipes(recommendation_dataframe)
-    if output is None:
-        return {"output":None}
-    else:
-        return {"output":output}
-
+@app.post("/diet/recommend/", response_model=PredictionOut)
+def update_item(prediction_input: PredictionIn):
+    # Chuyển NutritionInput thành list[float] để đưa vào hàm recommend
+    nutrition_list = list(prediction_input.nutrition_input.dict().values())
+    recommendation_dataframe = recommend(
+        dataset,
+        nutrition_list,
+        prediction_input.ingredients,
+        prediction_input.params.dict() if prediction_input.params else {}
+    )
+    output = output_recommended_recipes(recommendation_dataframe)
+    return {"output": output if output else None}
