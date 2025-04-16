@@ -14,7 +14,6 @@ WORKDIR /app/backend
 RUN pip install --upgrade pip
 RUN pip install -r requirements.txt
 
-EXPOSE 8081
+EXPOSE 7071
 
-# CMD ["uvicorn","main:app","--host","0.0.0.0","--port","8081","--reload"]
-CMD ["fastapi", "run", "main.py", "--port", "8081"]
+CMD ["uvicorn","main:app","--host","0.0.0.0","--port","7071"]
