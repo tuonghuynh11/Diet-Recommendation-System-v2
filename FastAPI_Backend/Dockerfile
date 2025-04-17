@@ -14,7 +14,10 @@ WORKDIR /app/backend
 RUN pip install --upgrade pip
 RUN pip install -r requirements.txt
 
-# EXPOSE 8000
+EXPOSE 7071
 
-# CMD ["uvicorn","main:app","--host","0.0.0.0","--port","8000"]
-CMD ["uvicorn","main:app"]
+CMD ["uvicorn","main:app","--host","0.0.0.0","--port","7071"]
+
+
+# docker build --progress=plain -t diet-recommendation-system -f FastAPI_Backend/Dockerfile .
+# docker run -d -p 7071:7071 --name diet-recommendation-service diet-recommendation-system
