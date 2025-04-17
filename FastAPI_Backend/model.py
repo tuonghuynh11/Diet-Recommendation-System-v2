@@ -57,6 +57,11 @@ def output_recommended_recipes(dataframe):
         output=dataframe.copy()
         output=output.to_dict("records")
         for recipe in output:
+            # Chuyển các trường thời gian thành string
+            recipe['CookTime'] = str(recipe['CookTime']) if recipe.get('CookTime') is not None else ""
+            recipe['PrepTime'] = str(recipe['PrepTime']) if recipe.get('PrepTime') is not None else ""
+            recipe['TotalTime'] = str(recipe['TotalTime']) if recipe.get('TotalTime') is not None else ""
+
             recipe['RecipeIngredientParts']=extract_quoted_strings(recipe['RecipeIngredientParts'])
             recipe['RecipeInstructions']=extract_quoted_strings(recipe['RecipeInstructions'])
     else:

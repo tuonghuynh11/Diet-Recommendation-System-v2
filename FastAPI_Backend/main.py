@@ -9,24 +9,24 @@ dataset = pd.read_csv('../Data/dataset.csv', compression='gzip')
 app = FastAPI()
 
 class NutritionInput(BaseModel):
-    Calories: float = Field(..., ge=0, le=2000, description="Từ 0 đến 2000 kcal")
-    FatContent: float = Field(..., ge=0, le=100, description="Từ 0 đến 100 g")
-    SaturatedFatContent: float = Field(..., ge=0, le=13, description="Từ 0 đến 13 g")
-    CholesterolContent: float = Field(..., ge=0, le=300, description="Từ 0 đến 300 mg")
-    SodiumContent: float = Field(..., ge=0, le=2300, description="Từ 0 đến 2300 mg")
-    CarbohydrateContent: float = Field(..., ge=0, le=325, description="Từ 0 đến 325 g")
-    FiberContent: float = Field(..., ge=0, le=50, description="Từ 0 đến 50 g")
-    SugarContent: float = Field(..., ge=0, le=40, description="Từ 0 đến 40 g")
-    ProteinContent: float = Field(..., ge=0, le=40, description="Từ 0 đến 40 g")
+    Calories: float = Field(2000, gt=0, le=2000, description="Từ 0 đến 2000 kcal")
+    FatContent: float = Field(100, gt=0, le=100, description="Từ 0 đến 100 g")
+    SaturatedFatContent: float = Field(13, gt=0, le=13, description="Từ 0 đến 13 g")
+    CholesterolContent: float = Field(300, gt=0, le=300, description="Từ 0 đến 300 mg")
+    SodiumContent: float = Field(2300, gt=0, le=2300, description="Từ 0 đến 2300 mg")
+    CarbohydrateContent: float = Field(325, gt=0, le=325, description="Từ 0 đến 325 g")
+    FiberContent: float = Field(50, gt=0, le=50, description="Từ 0 đến 50 g")
+    SugarContent: float = Field(40, gt=0, le=40, description="Từ 0 đến 40 g")
+    ProteinContent: float = Field(40, gt=0, le=40, description="Từ 0 đến 40 g")
 
-class params(BaseModel):
+class Params(BaseModel):
     n_neighbors: int = 5
     return_distance: bool = False
 
 class PredictionIn(BaseModel):
     nutrition_input: NutritionInput
     ingredients: List[str] = []
-    params: Optional[params]
+    params: Optional[Params] = None
 
 class Recipe(BaseModel):
     Name: str
