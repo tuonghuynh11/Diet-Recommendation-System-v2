@@ -4,7 +4,7 @@ from sklearn.preprocessing import StandardScaler
 from sklearn.neighbors import NearestNeighbors
 from sklearn.pipeline import Pipeline
 from sklearn.preprocessing import FunctionTransformer
-
+from ImageFinder import get_images_links as find_image
 
 def scaling(dataframe):
     scaler=StandardScaler()
@@ -61,6 +61,7 @@ def output_recommended_recipes(dataframe):
             recipe['CookTime'] = str(recipe['CookTime']) if recipe.get('CookTime') is not None else ""
             recipe['PrepTime'] = str(recipe['PrepTime']) if recipe.get('PrepTime') is not None else ""
             recipe['TotalTime'] = str(recipe['TotalTime']) if recipe.get('TotalTime') is not None else ""
+            recipe['Image']=find_image(recipe['Name'])
 
             recipe['RecipeIngredientParts']=extract_quoted_strings(recipe['RecipeIngredientParts'])
             recipe['RecipeInstructions']=extract_quoted_strings(recipe['RecipeInstructions'])

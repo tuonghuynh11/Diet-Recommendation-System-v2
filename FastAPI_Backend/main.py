@@ -30,6 +30,7 @@ class PredictionIn(BaseModel):
 
 class Recipe(BaseModel):
     Name: str
+    Image: str
     CookTime: str
     PrepTime: str
     TotalTime: str
