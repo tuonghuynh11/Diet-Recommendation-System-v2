@@ -4,6 +4,7 @@ from typing import List, Optional
 import pandas as pd
 from model import recommend, output_recommended_recipes
 
+# dataset = pd.read_csv('../Data/dataset.csv', compression='gzip')
 dataset = pd.read_csv('../Data/dataset.csv', compression='gzip')
 
 app = FastAPI()
@@ -29,11 +30,13 @@ class PredictionIn(BaseModel):
     params: Optional[Params] = None
 
 class Recipe(BaseModel):
+    id: str = Field(..., alias='_id')
     Name: str
     Image: str
     CookTime: str
     PrepTime: str
     TotalTime: str
+    RecipeIngredientQuantities: List[str]
     RecipeIngredientParts: List[str]
     Calories: float
     FatContent: float
