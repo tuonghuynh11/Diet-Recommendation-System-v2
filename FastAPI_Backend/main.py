@@ -56,7 +56,7 @@ class PredictionOut(BaseModel):
 def home():
     return {"health_check": "OK"}
 
-@app.post("/diet/recommend/", response_model=PredictionOut)
+@app.post("/diet/recommend", response_model=PredictionOut)
 def update_item(prediction_input: PredictionIn):
     # Chuyển NutritionInput thành list[float] để đưa vào hàm recommend
     nutrition_list = list(prediction_input.nutrition_input.dict().values())
